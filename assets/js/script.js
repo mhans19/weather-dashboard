@@ -1,22 +1,50 @@
 var APIKey = "da1207ce6ca80c363fd1e4bb5cdbcbc9";
 var cityInputEl = document.querySelector(".form-control");
-var cityFormEl = document.querySelector("#city-form");
+var cityButtonEl = document.querySelector("#searchButton");
+var weatherCityEl = document.querySelector("#city-search-term");
+var curTempEl = document.querySelector("#curTemp");
+var curHumEl = document.querySelector("#curHum");
+var curWindEl = document.querySelector("#curWind");
+var curUVEl = document.querySelector("#curUV");
+
+
+var formSubmitHandler = function(event) {
+    event.preventDefault();
+    // get value from input element
+    var city = cityInputEl.value.trim();
+
+    if (city) {
+        fetchAPI(city);
+        cityInputEl.value = "";
+    } else {
+    alert("Please enter a valid city.");
+    }
+};
 
 var fetchAPI = function(city) {
-    // format the api url
-    var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
+    // format the api urls
+    var currentWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + 
+    "&units=imperial";
   
-    // make a request to the url
-    fetch(apiUrl)
+    // make a request to the url for current weather
+    fetch(currentWeatherUrl)
         .then(function(response) {
             // request was successful
             if (response.ok) {
-                response.json().then(function(data) {
-                    //displayCities(data);
-                    console.log(data);
+                response.json().then(function(response) {
+                        // Header (City name, current date, and icon)
+                            //Name
+                            weatherCityEl.textContent = "";
+                            weatherCityEl.textContent = response.name;
+                        //Date
+                            $("#date").text("(" + moment().format("L") + ")");
+                        //Icon
+                            //$("#weather-icon");
+                        fetchUV(response);
+                    console.log(response);
             });
         } else {
-            alert("Eror: " + response.statusText);
+            weatherCityEl.textContent = "Error: " + response.statusText;
         }
     })
     .catch(function(error) {
@@ -24,20 +52,58 @@ var fetchAPI = function(city) {
     });
 };
 
-var formSubmitHandler = function(event) {
-    event.preventDefault();
-    // get value from input element
-    var cityInput = cityInputEl.value.trim();
+var fetchUV = function(response) {
+    // format the UV api
+    var uvURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + response.coord.lat + "&lon=" + response.coord.lon + "&appid=" + APIKey;
 
-    if (cityInput) {
-        fetchAPI(cityInput);
-        cityInputEl.value = "";
-    } else {
-    alert("Please enter a valid city.");
-    }
-    console.log(event);
+    // make a request to the url for current weather
+    fetch(uvURL)
+        .then(function(uvData) {
+            // request was successful
+            if (uvData.ok) {
+                uvData.json().then(function(uvData) {
+                    // Current Weather
+                        curTempEl.textContent = "Temperature: " + Math.round(response.main.temp) + " \u00B0F";
+                        curHumEl.textContent = "Humidity: " + response.main.humidity + "%";
+                        curWindEl.textContent = "Wind Speed: " + response.wind.speed + " MPH";
+                        curUVEl.textContent = "UV Index: " + uvData[0].value;
+                    fetchForecast(response, uvData);
+                    console.log(uvData);   
+            });
+        } else {
+            alert("Eror: " + uvData.statusText);
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect");
+    });
 };
 
+var fetchForecast = function(response, uvData) {
+    // format the UV api
+    var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + response.id + "&units=imperial&appid=" + APIKey;
+    
+    // make a request to the url for current weather
+    fetch(forecastURL)
+        .then(function(foreData) {
+            // request was successful
+            if (foreData.ok) {
+                foreData.json().then(function(foreData) {
+                    displayWeather(response, uvData, foreData);
+                    console.log(foreData);   
+            });
+        } else {
+            alert("Eror: " + foreData.statusText);
+        }
+    })
+    .catch(function(error) {
+        alert("Unable to connect");
+    });
+};
+
+
+
+   
 
 // $('#searchButton').on('click', function(event){  
 //     event.preventDefault();
@@ -54,4 +120,6 @@ var formSubmitHandler = function(event) {
 
 //     fetchAPI();
 // });
-cityFormEl.addEventListener("submit", formSubmitHandler);
+
+
+cityButtonEl.addEventListener("click", formSubmitHandler);

@@ -10,26 +10,56 @@
     <title>Weather Dashboard</title>
 </head>
 <body>
+    <!-- Begin Header -->
     <header>
         <h1 class = "text-center text-white bg-dark">Weather Dashboard</h1>
     </header>
-    <main class = "flex-row justify-space-between">
-        <div class = "col-12 col-md-4">
-            <div class = "card">
-                <form id = city-form class = "card-body">
-                    <label for="cityinput">Search for a City:</label>
-                    <input type="text" class="form-control" id = "cityinput" autofocus="true"></input>
-                    <button class="btn btn-primary" id = "searchButton" type="submit"><span class="oi oi-magnifying-glass"></span></button>
-                </form>
+    <!-- End Header -->
+    <div class = "container">
+        <div class = "row">
+            <!-- Begin Search Form -->
+            <div class = "col-12 col-md-4">
+                <div class = "card">
+                    <div class = "card-body">
+                        <div class = "card-title">
+                            <h2>Search for City</h2>  
+                            <div class = "city-input">
+                                <input type = "text" class = "form-control" placeholder="Enter City Name"></input>
+                                <button type = "submit" id = "searchButton" class="btn btn-primary btn-block oi oi-magnifying-glass"></button> 
+                            </div>
+                        </div> 
+                        <!-- Begin History -->
+                        <div class = "list-group" id = "cityHistory"></div>
+                        <!-- End History --> 
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class = "col-12 col-md-8">
-            <div class = "card">
-                <h4 id = "test"></h4>
+            <!-- End Search Form -->
+
+           
+            <div class = "col-12 col-md-8">
+                <!-- Begin Current Weather -->
+                <h2 id = "weather-container">
+                    <span id="city-search-term"></span>
+                    <span id = "date"></span>
+                    <span id = "weather-icon"></span>
+                </h2>
+                <div id="city-container">
+                    <h4 id = "curTemp"></h4>
+                    <h4 id = "curHum"></h4>
+                    <h4 id = "curWind"></h4>
+                    <h4 id = "curUV"></h4>
+                </div>
+                <!-- End Current Weather -->
+                <!-- Begin 5-Day forecast -->
+                <div class = "row justify-content-between"></div>
+                <!-- End 5-Day forecast -->
             </div>
+            
         </div>
-    </main>
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
