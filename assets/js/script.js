@@ -1,4 +1,6 @@
 var APIKey = "da1207ce6ca80c363fd1e4bb5cdbcbc9";
+var forecastIndex = [0,1,2,3,4];
+var increment = 0;
 var cityInputEl = document.querySelector(".form-control");
 var cityButtonEl = document.querySelector("#searchButton");
 var weatherCityEl = document.querySelector("#city-search-term");
@@ -7,6 +9,11 @@ var curHumEl = document.querySelector("#curHum");
 var curWindEl = document.querySelector("#curWind");
 var curUVEl = document.querySelector("#curUV");
 
+var getIconID = function(iconID) {
+    var URL = `http://openweathermap.org/img/wn/$(iconID)@2x.png`;
+    var icon = $("<img>").attr("alt", "Weather Icon").attr("src", URL);
+    return(icon);
+}  
 
 var formSubmitHandler = function(event) {
     event.preventDefault();
@@ -22,10 +29,9 @@ var formSubmitHandler = function(event) {
 };
 
 var fetchAPI = function(city) {
-    // format the api urls
-    var currentWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey + 
-    "&units=imperial";
-  
+    // format the URL
+    var currentWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + 
+                            APIKey + "&units=imperial";
     // make a request to the url for current weather
     fetch(currentWeatherUrl)
         .then(function(response) {
@@ -39,7 +45,8 @@ var fetchAPI = function(city) {
                         //Date
                             $("#date").text("(" + moment().format("L") + ")");
                         //Icon
-                            //$("#weather-icon");
+                        $("#weather-icon").append(
+                            $('<img>',{'alt': 'Weather Icon', 'src': "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"}));
                         fetchUV(response);
                     console.log(response);
             });
@@ -54,9 +61,9 @@ var fetchAPI = function(city) {
 
 var fetchUV = function(response) {
     // format the UV api
-    var uvURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + response.coord.lat + "&lon=" + response.coord.lon + "&appid=" + APIKey;
-
-    // make a request to the url for current weather
+    var uvURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?lat=" + 
+                 response.coord.lat + "&lon=" + response.coord.lon + "&appid=" + APIKey;
+    // make a request to the url for uv index
     fetch(uvURL)
         .then(function(uvData) {
             // request was successful
@@ -80,16 +87,25 @@ var fetchUV = function(response) {
 };
 
 var fetchForecast = function(response, uvData) {
-    // format the UV api
-    var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?id=" + response.id + "&units=imperial&appid=" + APIKey;
+    // format the URL
+    var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + response.name + "&temp_max&units=imperial&appid=" + APIKey;
     
-    // make a request to the url for current weather
+    // make a request to the url for five day forecast
     fetch(forecastURL)
         .then(function(foreData) {
             // request was successful
             if (foreData.ok) {
                 foreData.json().then(function(foreData) {
-                    displayWeather(response, uvData, foreData);
+                    jQuery.each(forecastIndex, function appendElements(){
+                        $("#forecast").append(
+                            $('<div/>', {'class': 'col-sm-3'}).append(
+                                $('<div/>', {'class': 'card'}).append(
+                                    $('<div/>', {'class': 'card-body'}).append(
+                                        $('<h5/>', {'class': 'card-title', text: foreData.list[increment].dt_txt}).append(
+                                            $('<p/>', {'class': 'card-text'}).append(    
+                        ))))));
+                        increment++;
+                    });
                     console.log(foreData);   
             });
         } else {
@@ -101,9 +117,7 @@ var fetchForecast = function(response, uvData) {
     });
 };
 
-
-
-   
+ 
 
 // $('#searchButton').on('click', function(event){  
 //     event.preventDefault();
