@@ -74,6 +74,13 @@ var fetchUV = function(response) {
                         curHumEl.textContent = "Humidity: " + response.main.humidity + "%";
                         curWindEl.textContent = "Wind Speed: " + response.wind.speed + " MPH";
                         curUVEl.textContent = "UV Index: " + uvData[0].value;
+                            if(uvData[0].value < 5) {
+                                $("#curUV").addClass("bg-success");
+                            } else if (uvData[0].value > 6) {
+                                $("#curUV").addClass("bg-danger");
+                            } else {
+                                $("#curUV").addClass("bg-warning");
+                            };
                     fetchForecast(response, uvData);
                     console.log(uvData);   
             });
