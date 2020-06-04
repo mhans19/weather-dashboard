@@ -1,6 +1,7 @@
 var APIKey = "da1207ce6ca80c363fd1e4bb5cdbcbc9";
 var forecastIndex = [0,1,2,3,4];
 var increment = 0;
+var iconIncrement = 1;
 var cityInputEl = document.querySelector(".form-control");
 var cityButtonEl = document.querySelector("#searchButton");
 var weatherCityEl = document.querySelector("#city-search-term");
@@ -109,9 +110,11 @@ var fetchForecast = function(response, uvData) {
                                 $('<div/>', {'class': 'card'}).append(
                                     $('<div/>', {'class': 'card-body'}).append(
                                         $('<h5/>', {'class': 'card-title', text: foreData.list[increment].dt_txt}).append(
-                                            $('<p/>', {'class': 'card-text'}).append(    
-                        ))))));
+                                            $('<img>', {'class': 'card-subtitle', 'alt': 'Weather Icon', 'src': "http://openweathermap.org/img/wn/" + foreData.list[iconIncrement].weather[0].icon + "@2x.png"}).append(
+                                                $('<p/>', {'class': 'card-text', text: "hello"}).append(    
+                        )))))));
                         increment++;
+                        iconIncrement++;
                     });
                     console.log(foreData);   
             });
