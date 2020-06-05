@@ -1,6 +1,4 @@
 var APIKey = "da1207ce6ca80c363fd1e4bb5cdbcbc9";
-var forecastIndex = [0,1,2,3,4];
-var increment = 0;
 var cityInputEl = document.querySelector(".form-control");
 var weatherCityEl = document.querySelector("#city-search-term");
 var weatherIconEl = document.querySelector("#weatherIcon");
@@ -10,14 +8,9 @@ var curWindEl = document.querySelector("#curWind");
 var curUVEl = document.querySelector("#curUV");
 var forcastLabel = document.querySelector("#forecastLabel");
 
-var getIconID = function(iconID) {
-    var URL = `http://openweathermap.org/img/wn/$(iconID)@2x.png`;
-    var icon = $("<img>").attr("alt", "Weather Icon").attr("src", URL);
-    return(icon);
-}  
 
-var formSubmitHandler = function(event) {
-    event.preventDefault();
+var formSubmitHandler = function() {
+    //event.preventDefault();
     // get value from input element
     var city = cityInputEl.value.trim();
 
@@ -50,7 +43,6 @@ var fetchAPI = function(city) {
                             weatherIconEl.setAttribute('src', "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png");
                             
                         fetchUV(response);
-                    console.log(response);
             });
         } else {
             weatherCityEl.textContent = "Error: " + response.statusText;
@@ -84,7 +76,6 @@ var fetchUV = function(response) {
                                 $("#curUV").addClass("bg-warning");
                             };
                     fetchForecast(response, uvData);
-                    console.log(uvData);   
             });
         } else {
             alert("Eror: " + uvData.statusText);
@@ -96,6 +87,10 @@ var fetchUV = function(response) {
 };
 
 var fetchForecast = function(response, uvData) {
+    //define increment
+    var increment = 0;
+    //only want 5 days
+    var forecastIndex = [0,1,2,3,4];
     // format the URL
     var forecastURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + response.name + "&temp_max&units=imperial&appid=" + APIKey;
     
@@ -106,9 +101,11 @@ var fetchForecast = function(response, uvData) {
             if (foreData.ok) {
                 foreData.json().then(function(foreData) {
                     forcastLabel.textContent = "5-Day Weather Forecast";
+                    $("#forecast").empty();
                     jQuery.each(forecastIndex, function appendElements(){
+                        //create div element down the road
                         $("#forecast").append(
-                            $('<div/>', {'class': 'col'}).append(
+                            $('<div/>', {'class': 'col', 'id': 'card-holder'}).append(
                                 $('<div/>', {'class': 'card bg-primary'}).append(
                                     $('<div/>', {'class': 'card-body text-center'}).append(
                                         $('<h4/>', {'class': 'card-title', text: moment(foreData.list[increment].dt_txt).format("L")}),
@@ -119,7 +116,6 @@ var fetchForecast = function(response, uvData) {
                         )))));
                         increment = increment + 8; // increase by 8 so we get 24 hours blocks rather than 3
                     });
-                    console.log(foreData);   
             });
         } else {
             alert("Eror: " + foreData.statusText);
@@ -132,21 +128,21 @@ var fetchForecast = function(response, uvData) {
 
  
 
-// $('#searchButton').on('click', function(event){  
-//     event.preventDefault();
-//     cityInput = document.querySelector(".form-control").value;
+$('#searchButton').on('click', function(event){  
+    event.preventDefault();
+    cityInput = document.querySelector(".form-control").value;
 
-//     const cityArray = {
-//        cityname: cityInput
-//      };
-//     const cityHistory = JSON.parse(localStorage.getItem("storedCities")) || [];
-//     cityHistory.push(cityArray);
-//     //cityHistory.sort((a, b)=> b.cityCount - a.cityCount);
-//     //cityHistory.splice(5);
-//     localStorage.setItem("storedCities", JSON.stringify(cityHistory));
+    const cityArray = {
+       cityname: cityInput
+     };
+    const cityHistory = JSON.parse(localStorage.getItem("storedCities")) || [];
+    cityHistory.push(cityArray);
+    //cityHistory.sort((a, b)=> b.cityCount - a.cityCount);
+    //cityHistory.splice(5);
+    localStorage.setItem("storedCities", JSON.stringify(cityHistory));
 
-//     fetchAPI();
-// });
+    formSubmitHandler();
+});
 
 
-$("#searchButton").on("click", formSubmitHandler);
+//("#searchButton").on("click", formSubmitHandler);
