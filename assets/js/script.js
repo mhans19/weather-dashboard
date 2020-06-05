@@ -7,20 +7,7 @@ var curHumEl = document.querySelector("#curHum");
 var curWindEl = document.querySelector("#curWind");
 var curUVEl = document.querySelector("#curUV");
 var forcastLabel = document.querySelector("#forecastLabel");
-
-
-var formSubmitHandler = function() {
-    //event.preventDefault();
-    // get value from input element
-    var city = cityInputEl.value.trim();
-
-    if (city) {
-        fetchAPI(city);
-        cityInputEl.value = "";
-    } else {
-    alert("Please enter a valid city.");
-    }
-};
+const cityHistory = JSON.parse(localStorage.getItem("storedCities")) || [];
 
 var fetchAPI = function(city) {
     // format the URL
@@ -46,6 +33,10 @@ var fetchAPI = function(city) {
             });
         } else {
             weatherCityEl.textContent = "Error: " + response.statusText;
+            setTimeout(
+                function() {
+                    location.reload(true);
+                }, 2000);
         }
     })
     .catch(function(error) {
@@ -79,6 +70,10 @@ var fetchUV = function(response) {
             });
         } else {
             alert("Eror: " + uvData.statusText);
+            setTimeout(
+                function() {
+                    location.reload(true);
+                }, 2000);
         }
     })
     .catch(function(error) {
@@ -119,6 +114,10 @@ var fetchForecast = function(response, uvData) {
             });
         } else {
             alert("Eror: " + foreData.statusText);
+            setTimeout(
+                function() {
+                    location.reload(true);
+                }, 2000);
         }
     })
     .catch(function(error) {
@@ -126,23 +125,49 @@ var fetchForecast = function(response, uvData) {
     });
 };
 
- 
+$(document).ready(function(){
+    // display previous stored cities, if set
+    var prevCity = cityHistory;
+    // identify 10 most recent searches
+    if (cityHistory.length > 10){
+    var recentIndex = cityHistory.length - 10;
+    } else {
+        var recentIndex = 0;
+    }
+    for (var i = recentIndex; i < cityHistory.length; i++){
+        if(prevCity !== null & cityHistory[i].cityname !== "") {
+            $("#cityHistory").append(
+                $('<button/>', {'class': 'text-left btn btn-light btn-outline-secondary btn-block', 'id': 'historyBtn', 'value': cityHistory[i].cityname, text: cityHistory[i].cityname}));
+        }
+    }
+
+})
 
 $('#searchButton').on('click', function(event){  
     event.preventDefault();
-    cityInput = document.querySelector(".form-control").value;
+    cityInput = document.querySelector(".form-control").value.trim();
 
     const cityArray = {
        cityname: cityInput
      };
-    const cityHistory = JSON.parse(localStorage.getItem("storedCities")) || [];
+
     cityHistory.push(cityArray);
-    //cityHistory.sort((a, b)=> b.cityCount - a.cityCount);
-    //cityHistory.splice(5);
+    
     localStorage.setItem("storedCities", JSON.stringify(cityHistory));
 
-    formSubmitHandler();
+        // get value from input element
+        var city = cityInputEl.value.trim();
+
+        if (city) {
+            fetchAPI(city);
+            cityInputEl.value = "";
+        } else {
+        alert("Please enter a valid city.");
+        }
 });
 
+$('#cityHistory').on('click', '.btn-outline-secondary', function(){  
+    var city = $(this).text();
+    fetchAPI(city);
+});
 
-//("#searchButton").on("click", formSubmitHandler);
