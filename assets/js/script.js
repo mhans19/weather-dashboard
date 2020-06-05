@@ -137,7 +137,7 @@ $(document).ready(function(){
     for (var i = recentIndex; i < cityHistory.length; i++){
         if(prevCity !== null & cityHistory[i].cityname !== "") {
             $("#cityHistory").append(
-                $('<button/>', {'class': 'text-left btn btn-light btn-outline-secondary btn-block', 'id': 'historyBtn', 'value': cityHistory[i].cityname, text: cityHistory[i].cityname}));
+                $('<button/>', {'class': 'text-left btn btn-light btn-outline-secondary btn-block mt-2', 'id': 'historyBtn', 'value': cityHistory[i].cityname, text: cityHistory[i].cityname}));
         }
     }
 
@@ -169,5 +169,9 @@ $('#searchButton').on('click', function(event){
 $('#cityHistory').on('click', '.btn-outline-secondary', function(){  
     var city = $(this).text();
     fetchAPI(city);
+});
+
+$('#refreshBtn').on('click', function(){  
+    location.reload();
 });
 
