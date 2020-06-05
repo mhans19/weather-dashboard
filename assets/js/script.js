@@ -1,14 +1,14 @@
 var APIKey = "da1207ce6ca80c363fd1e4bb5cdbcbc9";
 var forecastIndex = [0,1,2,3,4];
 var increment = 0;
-var iconIncrement = 1;
 var cityInputEl = document.querySelector(".form-control");
-var cityButtonEl = document.querySelector("#searchButton");
 var weatherCityEl = document.querySelector("#city-search-term");
+var weatherIconEl = document.querySelector("#weatherIcon");
 var curTempEl = document.querySelector("#curTemp");
 var curHumEl = document.querySelector("#curHum");
 var curWindEl = document.querySelector("#curWind");
 var curUVEl = document.querySelector("#curUV");
+var forcastLabel = document.querySelector("#forecastLabel");
 
 var getIconID = function(iconID) {
     var URL = `http://openweathermap.org/img/wn/$(iconID)@2x.png`;
@@ -33,6 +33,7 @@ var fetchAPI = function(city) {
     // format the URL
     var currentWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + 
                             APIKey + "&units=imperial";
+                        
     // make a request to the url for current weather
     fetch(currentWeatherUrl)
         .then(function(response) {
@@ -46,8 +47,8 @@ var fetchAPI = function(city) {
                         //Date
                             $("#date").text("(" + moment().format("L") + ")");
                         //Icon
-                        $("#weather-icon").append(
-                            $('<img>',{'alt': 'Weather Icon', 'src': "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"}));
+                            weatherIconEl.setAttribute('src', "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png");
+                            
                         fetchUV(response);
                     console.log(response);
             });
@@ -104,17 +105,19 @@ var fetchForecast = function(response, uvData) {
             // request was successful
             if (foreData.ok) {
                 foreData.json().then(function(foreData) {
+                    forcastLabel.textContent = "5-Day Weather Forecast";
                     jQuery.each(forecastIndex, function appendElements(){
                         $("#forecast").append(
-                            $('<div/>', {'class': 'col-sm-3'}).append(
-                                $('<div/>', {'class': 'card'}).append(
-                                    $('<div/>', {'class': 'card-body'}).append(
-                                        $('<h5/>', {'class': 'card-title', text: foreData.list[increment].dt_txt}).append(
-                                            $('<img>', {'class': 'card-subtitle', 'alt': 'Weather Icon', 'src': "http://openweathermap.org/img/wn/" + foreData.list[iconIncrement].weather[0].icon + "@2x.png"}).append(
-                                                $('<p/>', {'class': 'card-text', text: "hello"}).append(    
-                        )))))));
-                        increment++;
-                        iconIncrement++;
+                            $('<div/>', {'class': 'col'}).append(
+                                $('<div/>', {'class': 'card bg-primary'}).append(
+                                    $('<div/>', {'class': 'card-body text-center'}).append(
+                                        $('<h4/>', {'class': 'card-title', text: moment(foreData.list[increment].dt_txt).format("L")}),
+                                        $('<img>', {'class': 'card-subtitle', 'alt': 'Weather Icon', 'src': "http://openweathermap.org/img/wn/" + foreData.list[increment].weather[0].icon + "@2x.png"}),
+                                        $('<div/>', {'class': 'card-text'}).append(
+                                            $('<h5/>', {text: 'Temp: ' + Math.round(foreData.list[increment].main.temp) + " \u00B0F"}),
+                                            $('<h5/>', {text: 'Humidity: ' + foreData.list[increment].main.humidity + "%"})                  
+                        )))));
+                        increment = increment + 8; // increase by 8 so we get 24 hours blocks rather than 3
                     });
                     console.log(foreData);   
             });
@@ -146,4 +149,4 @@ var fetchForecast = function(response, uvData) {
 // });
 
 
-cityButtonEl.addEventListener("click", formSubmitHandler);
+$("#searchButton").on("click", formSubmitHandler);

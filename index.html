@@ -21,12 +21,14 @@
             <div class = "col-12 col-md-3">
                 <div class = "card">
                     <div class = "card-body">
-                        <div class = "card-title">
-                            <h2>Search for City</h2>  
-                            <div class = "city-input">
+                        <div class = "card-title">  
+                            <form class = "city-input">
+                                <h2>Search for City</h2>
                                 <input type = "text" class = "form-control" placeholder="Enter City Name"></input>
-                                <button type = "submit" id = "searchButton" class="btn btn-primary btn-block oi oi-magnifying-glass"></button> 
-                            </div>
+                                <button class="btn btn-primary btn-block" type = "button" id = "searchButton">
+                                    <span class = "oi oi-magnifying-glass"></span>
+                                </button> 
+                            </form>
                         </div> 
                         <!-- Begin History -->
                         <div class = "list-group" id = "cityHistory"></div>
@@ -37,19 +39,26 @@
             <!-- End Search Form -->
             <div class = "col-12 col-md-9">
                 <!-- Begin Current Weather -->
-                <h2 id = "weather-container">
-                    <span id="city-search-term"></span>
-                    <span id = "date"></span>
-                    <span id = "weather-icon"></span>
-                </h2>
-                <div id="city-container">
-                    <h4 id = "curTemp"></h4>
-                    <h4 id = "curHum"></h4>
-                    <h4 id = "curWind"></h4>
-                    <h4 id = "curUV"></h4>
+                <div class = "card">
+                    <div class = "card-body">
+                        <h2 class = "card-title">
+                                <span id="city-search-term"></span>
+                                <span id = "date"></span>
+                                <span>
+                                    <img id = "weatherIcon"></img>   
+                                </span>
+                        </h2>
+                        <div class = "card-text">
+                            <h4 id = "curTemp"></h4>
+                            <h4 id = "curHum"></h4>
+                            <h4 id = "curWind"></h4>
+                            <h4 id = "curUV"></h4>
+                        </div>
+                    </div>
                 </div>
                 <!-- End Current Weather -->
                 <!-- Begin 5-Day forecast -->
+                <h2 id = "forecastLabel"></h2>
                 <div class="row" id = "forecast"></div>
                 <!-- End 5-Day forecast -->
             </div>
