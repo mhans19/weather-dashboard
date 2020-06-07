@@ -44,7 +44,7 @@
             <!-- End Search Form -->
             <div class = "col-12 col-md-9">
                 <!-- Begin Current Weather -->
-                <div class = "card">
+                <div id = "weathCard">
                     <div class = "card-body">
                         <h2 class = "card-title">
                                 <span id="city-search-term"></span>
@@ -53,11 +53,7 @@
                                     <img id = "weatherIcon"></img>   
                                 </span>
                         </h2>
-                        <div class = "card-text">
-                            <h4 id = "curTemp"></h4>
-                            <h4 id = "curHum"></h4>
-                            <h4 id = "curWind"></h4>
-                            <h4 id = "curUV"></h4>
+                        <div class = "card-text" id = "curWeath">
                         </div>
                     </div>
                 </div>
@@ -67,7 +63,6 @@
                 <div class="row" id = "forecast"></div>
                 <!-- End 5-Day forecast -->
             </div>
-            
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
