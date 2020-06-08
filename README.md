@@ -44,7 +44,7 @@
         <li>
         When the application loads, the user is presented with a header titled "Weather Dashboard". On the left-hand panel, the user can type and submit the name of a city by typing the name in the text box below "Search for City" and clicking the search button. <br>
         <img width="1107" alt="jumbotron" src="assets/images/homescreen.PNG">
-        <img width="1107" alt="jumbotron" src="assets/images/citysearch.PNG">
+        <img width="1107" alt="jumbotron" src="assets/images/citysearch.PNG"> 
         </li>
         <li>
         Upon submitting the city name, the right-hand panel will populated with the current weather for that city, as well as a 5-day forecast. Weather elements such as temperature, humidity, wind speed, and a UV index are presented. Icons depicting the weather are also displayed. The UV index is colored based on favorable (green), moderate (yellow), or severe (red) status.<br>
